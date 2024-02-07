@@ -3168,6 +3168,7 @@ HTTPAPIServer::HandleInfer(
 #endif  // TRITON_ENABLE_TRACING
       }
       if (err == nullptr) {
+	LOG_VERBOSE(1) << "[request id: " << request_id << "success=====] ";
         infer_request.release();
         request_release_payload.release();
       }

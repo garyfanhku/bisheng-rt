@@ -1,7 +1,9 @@
 #!/bin/bash
 
-git config --global http.proxy http://192.168.106.8:1081
-git config --global https.proxy http://192.168.106.8:1081
+git config --global --unset https.proxy
+git config --global --unset http.proxy
+# git config --global http.proxy http://192.168.106.8:1081
+# git config --global https.proxy http://192.168.106.8:1081
 
 # export https_proxy=http://192.168.106.8:1081
 # export http_proxy=http://192.168.106.8:1081
@@ -18,7 +20,7 @@ function build_tf_backend() {
   ver=${BACKEND//tensorflow/libtf}
   LIBTF_DIR=${PROJ_DIR}/tritonbuild/third_party/${ver}_v22.12
 
-  python3 ./build.py \
+  python3 ./build.py -v \
     --backend=${BACKEND} \
     --no-container-build --no-core-build \
     --enable-gpu --enable-stats \
@@ -330,19 +332,19 @@ function build_server() {
   # If update common or core library, need to uncommont follow
   rm -fr tritonbuild/tritonserver/build/_deps/repo-core-build
 
-  #VERBOSE="-v"
-  VERBOSE=""
+  VERBOSE="-v"
+  # VERBOSE=""
 
-  python3 ./build.py ${VERBOSE} \
+  python3 ./build.py -v \
     --no-container-build --enable-gpu \
     --version 2.27.0 --container-version 22.08 --upstream-container-version 22.08 \
     --backend ensemble \
     --enable-logging --enable-stats --enable-metrics --enable-gpu-metrics --enable-cpu-metrics \
     --enable-tracing --enable-nvtx \
-    --endpoint grpc --endpoint http \
-    --override-core-cmake-arg="TRITON_ENABLE_TENSORRT=ON" \
+    --endpoint http \
     --extra-core-cmake-arg="TRITON_SRC_DIR=${PROJ_DIR}/src" \
     --cmake-dir ${PROJ_DIR} \
+    --build-type Debug \
     --build-dir ${PROJ_DIR}/tritonbuild \
     --install-dir ${PROJ_DIR}/tritonbuild/install
 }

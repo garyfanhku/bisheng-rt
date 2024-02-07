@@ -960,8 +960,8 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
     apt-get install -y --no-install-recommends \
       cmake-data=3.21.1-0kitware1ubuntu20.04.1 cmake=3.21.1-0kitware1ubuntu20.04.1
 
-RUN git config --global http.proxy http://192.168.106.8:1081
-RUN git config --global https.proxy http://192.168.106.8:1081
+# RUN git config --global http.proxy http://192.168.106.8:1081
+# RUN git config --global https.proxy http://192.168.106.8:1081
 '''
 
         if FLAGS.enable_gpu:
