@@ -117,8 +117,8 @@ ExternalProject_Add(curl
 ExternalProject_Add(
     curlpp
     PREFIX curlpp
-    URL http://192.168.106.8/deps/curlpp-0.8.1.zip
-    URL_HASH SHA256=67bb923bee565d1076baa6a758d299594ff0d8fd26fc5e02b83c5f5b5764ccee
+    URL https://github.com/jpbarrette/curlpp/archive/v0.8.1.tar.gz
+    # URL_HASH SHA256=67bb923bee565d1076baa6a758d299594ff0d8fd26fc5e02b83c5f5b5764ccee
     BUILD_IN_SOURCE 0
     INSTALL_DIR ${TRITON_THIRD_PARTY_INSTALL_PREFIX}/curlpp
     CMAKE_ARGS
@@ -143,8 +143,9 @@ ExternalProject_Add(grpc-repo
   PREFIX grpc-repo
   # GIT_REPOSITORY "https://github.com/grpc/grpc.git"
   # GIT_TAG "v1.48.0"
-  URL http://${HTTP_SERVER}/pkgs/grpc-v1.48.0.tar.gz
-  URL_HASH SHA256=3b42a23d00ad3eff4ed0fc85d54435edd6e2222033a4140262975c19eacd39c3
+  URL https://github.com/grpc/grpc/archive/refs/tags/v1.48.0.tar.gz
+  # URL http://${HTTP_SERVER}/pkgs/grpc-v1.48.0.tar.gz
+  # URL_HASH SHA256=3b42a23d00ad3eff4ed0fc85d54435edd6e2222033a4140262975c19eacd39c3
   SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/grpc-repo/src/grpc"
   EXCLUDE_FROM_ALL ON
   CONFIGURE_COMMAND ""
@@ -155,7 +156,7 @@ ExternalProject_Add(grpc-repo
 )
 
 #
-# Build nlohmann/json
+# # Build nlohmann/json
 #
 ExternalProject_Add(nlohmann-json
   PREFIX nlohmann-json
@@ -202,7 +203,7 @@ ExternalProject_Add(protobuf
     -DBUILD_SHARED_LIBS:STRING=no
     -DCMAKE_INSTALL_LIBDIR:STRING=lib
     -DCMAKE_INSTALL_PREFIX:PATH=${TRITON_THIRD_PARTY_INSTALL_PREFIX}/protobuf
-  PATCH_COMMAND git cherry-pick -n f180289c4670ca1afde5865bb8a7f2b61a3efcc5
+  # PATCH_COMMAND git cherry-pick -n f180289c4670ca1afde5865bb8a7f2b61a3efcc5
   DEPENDS grpc-repo
 )
 
@@ -227,7 +228,7 @@ ExternalProject_Add(absl
   DEPENDS grpc-repo
 )
 
-#
+# #
 # Build googletest project from grpc-repo
 #
 # Source is from grpc-repo so don't need PATCH_COMMAND to install
@@ -276,7 +277,7 @@ ExternalProject_Add(c-ares
   DEPENDS grpc-repo
 )
 
-#
+# 
 # Build GRPC
 #
 # Source is from grpc-repo so don't need PATCH_COMMAND to install
@@ -379,9 +380,9 @@ endif()
 #
 ExternalProject_Add(prometheus-cpp
   PREFIX prometheus-cpp
-  #URL "https://github.com/jupp0r/prometheus-cpp/archive/v0.7.0.tar.gz"
-  URL "http://192.168.106.8/pkgs/prometheus-cpp-1.0.1.tar.gz"
-  URL_HASH SHA256=593e028d401d3298eada804d252bc38d8cab3ea1c9e88bcd72095281f85e6d16
+  URL "https://github.com/jupp0r/prometheus-cpp/archive/v1.0.1.tar.gz"
+  # URL "http://192.168.106.8/pkgs/prometheus-cpp-1.0.1.tar.gz"
+  # URL_HASH SHA256=593e028d401d3298eada804d252bc38d8cab3ea1c9e88bcd72095281f85e6d16
   SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/prometheus-cpp/src/prometheus-cpp"
   EXCLUDE_FROM_ALL ON
   CMAKE_CACHE_ARGS
@@ -442,8 +443,9 @@ set(GCS_CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
 #
 ExternalProject_Add(google-cloud-cpp
   PREFIX google-cloud-cpp
-  URL "http://192.168.106.8/pkgs/google-cloud-cpp-v1.42.0.tar.gz"
-  URL_HASH SHA256=7f25db42f5dde5e8af9e9544a5fa6c37f6710caf28e7201d24f729a529ae5c7f
+  # URL "http://192.168.106.8/pkgs/google-cloud-cpp-v1.42.0.tar.gz"
+  URL "https://github.com/googleapis/google-cloud-cpp/archive/refs/tags/v1.42.0.tar.gz"
+  # URL_HASH SHA256=7f25db42f5dde5e8af9e9544a5fa6c37f6710caf28e7201d24f729a529ae5c7f
   #GIT_REPOSITORY "https://github.com/googleapis/google-cloud-cpp.git"
   #GIT_TAG "v1.42.0"
   SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/google-cloud-cpp/src/google-cloud-cpp"
@@ -504,138 +506,143 @@ ExternalProject_Add(cnmem
 #
 # Build aws-sdk-cpp
 #
-ExternalProject_Add(aws-sdk-cpp
-  PREFIX aws-sdk-cpp
-  URL "http://192.168.106.8/pkgs/aws-sdk-cpp-1.11.60.tar.gz"
-  URL_HASH SHA256=1294499dd757e7805b6fab28f9650964dcdfba5665e280b4237bfb40168dfc93
-  SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/aws-sdk-cpp/src/aws-sdk-cpp"
-  # GIT_REPOSITORY "https://github.com/aws/aws-sdk-cpp.git"
-  # GIT_TAG "1.11.60"
-  # SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/aws-sdk-cpp/src/aws-sdk-cpp"
-  EXCLUDE_FROM_ALL ON
-  CMAKE_CACHE_ARGS
-    ${_CMAKE_ARGS_CMAKE_TOOLCHAIN_FILE}
-    ${_CMAKE_ARGS_VCPKG_TARGET_TRIPLET}
-    -DCURL_LIBRARY=${TRITON_THIRD_PARTY_INSTALL_PREFIX}/curl/lib/libcurl.a
-    -DBUILD_ONLY:STRING=s3
-    -DBUILD_SHARED_LIBS:BOOL=OFF
-    -DMINIMIZE_SIZE:BOOL=ON
-    -DENABLE_TESTING:BOOL=OFF
-    -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
-    -DCMAKE_INSTALL_PREFIX:PATH=${TRITON_THIRD_PARTY_INSTALL_PREFIX}/aws-sdk-cpp
-  PATCH_COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/install_src.py --src <SOURCE_DIR> ${INSTALL_SRC_DEST_ARG}
-  DEPENDS curl
-)
-
+# ExternalProject_Add(aws-sdk-cpp
+#   PREFIX aws-sdk-cpp
+#   #URL "http://192.168.106.8/pkgs/aws-sdk-cpp-1.11.60.tar.gz"
+#   #URL_HASH SHA256=1294499dd757e7805b6fab28f9650964dcdfba5665e280b4237bfb40168dfc93
+#   #SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/aws-sdk-cpp/src/aws-sdk-cpp"
+#   GIT_REPOSITORY "https://github.com/aws/aws-sdk-cpp.git"
+#   GIT_TAG "1.11.60"
+#   SOURCE_DIR "${CMAKE_CURRENT_BINARY_DIR}/aws-sdk-cpp/src/aws-sdk-cpp"
+#   EXCLUDE_FROM_ALL ON
+#   CMAKE_CACHE_ARGS
+#     ${_CMAKE_ARGS_CMAKE_TOOLCHAIN_FILE}
+#     ${_CMAKE_ARGS_VCPKG_TARGET_TRIPLET}
+#     -DCURL_LIBRARY=${TRITON_THIRD_PARTY_INSTALL_PREFIX}/curl/lib/libcurl.a
+#     -DBUILD_ONLY:STRING=s3
+#     -DBUILD_SHARED_LIBS:BOOL=OFF
+#     -DMINIMIZE_SIZE:BOOL=ON
+#     -DENABLE_TESTING:BOOL=OFF
+#     -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=ON
+#     -DCMAKE_INSTALL_PREFIX:PATH=${TRITON_THIRD_PARTY_INSTALL_PREFIX}/aws-sdk-cpp
+#   PATCH_COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/tools/install_src.py --src <SOURCE_DIR> ${INSTALL_SRC_DEST_ARG}
+#   DEPENDS curl
+# )
+# 
 #
 # Build opencv-3.4.2
 #
 
-ExternalProject_Add(
-    zlib
-    PREFIX zlib
-    URL http://${HTTP_SERVER}/deps/zlib-1.2.8.tar.gz
-    URL_HASH SHA256=36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d
-    CONFIGURE_COMMAND CFLAGS=-fPIC CXXFLAGS=-fPIC LDFLAGS=-fPIC ./configure --prefix=${THIRD_PARTY_PREFIX} 
-    BUILD_COMMAND CFLAGS=-fPIC CXXFLAGS=-fPIC LDFLAGS=-fPIC make -j $ENV{J}
-    INSTALL_COMMAND make install
-    BUILD_IN_SOURCE 1
-)
-# libpng
-ExternalProject_Add(
-    libpng
-    PREFIX libpng
-    URL http://${HTTP_SERVER}/deps/libpng-1.6.37.tar.gz
-    URL_HASH SHA256=daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
-    BUILD_IN_SOURCE 0
-    INSTALL_DIR ${THIRD_PARTY_PREFIX}
-    CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_INSTALL_LIBDIR=lib
-        -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
-        -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
-        -DPNG_TESTS:BOOL=OFF
-        -DPNG_SHARED:BOOL=OFF
-        -DPNG_STATIC:BOOL=ON
-        -DPNG_DEBUG:BOOL=OFF
-        -DCMAKE_CXX_FLAGS=-fPIC
-        -DCMAKE_C_FLAGS=-fPIC
-    BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
-    INSTALL_COMMAND make install &&
-        cd ${THIRD_PARTY_PREFIX}/include && ln -s libpng16 libpng
-    DEPENDS zlib
-)
-
-# libjpeg-turbo-202
-ExternalProject_Add(
-    libjpeg-turbo-202
-    PREFIX libjpeg-turbo-202
-    URL http://${HTTP_SERVER}/deps/libjpeg-turbo-2.0.2.tar.gz
-    URL_HASH SHA256=b45255bd476c19c7c6b198c07c0487e8b8536373b82f2b38346b32b4fa7bb942
-    BUILD_IN_SOURCE 0
-    CMAKE_ARGS
-        -G "Unix Makefiles"
-        -DCMAKE_CXX_FLAGS=-fPIC
-        -DCMAKE_C_FLAGS=-fPIC
-        -DENABLE_SHARED=1
-        -DENABLE_STATIC=1
-        -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_INSTALL_LIBDIR=${THIRD_PARTY_PREFIX}/lib
-        -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
-        -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
-    BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
-)
-
-# opencv-342
-ExternalProject_Add(
-    opencv-342
-    PREFIX opencv-342
-    URL http://${HTTP_SERVER}/deps/opencv-3.4.2.tar.gz
-    URL_HASH SHA256=81dbd5e7e9f8a4c936b94629bf4765745942a1d634ae38ec08bc57b73b28ffc5
-    BUILD_IN_SOURCE 0
-    CMAKE_ARGS
-        -DBUILD_SHARED_LIBS=OFF
-        -DBUILD_PNG=OFF
-        -DBUILD_JASPER=ON
-        -DBUILD_JPEG=OFF
-        -DBUILD_WEBP=ON
-        -DBUILD_TIFF=ON
-        -DBUILD_ZLIB=ON
-        -DWITH_JPEG=ON
-        -DWITH_WEBP=ON
-        -DWITH_PNG=ON
-        -DWITH_JASPER=ON
-        -DWITH_TIFF=ON
-        -DWITH_LIBV4L=ON
-        -DWITH_V4L=OFF
-        -DWITH_FFMPEG=OFF
-        -DWITH_1394=OFF
-        -DWITH_GTK=OFF
-        -DWITH_VFW=OFF
-        -DWITH_CUDA=OFF
-        -DWITH_OPENEXR=OFF
-        -DWITH_OPENMP=OFF
-        -DWITH_TBB=OFF
-        -DWITH_IPP=ON
-        -DPNG_INCLUDE_DIR=${THIRD_PARTY_PREFIX}/include
-        -DPNG_LIBRARY=${THIRD_PARTY_PREFIX}/lib/libpng.a
-        -DJPEG_INCLUDE_DIR=${THIRD_PARTY_PREFIX}/include
-        -DJPEG_LIBRARY=${THIRD_PARTY_PREFIX}/lib/libjpeg.a
-        -DOPENCV_IPPICV_URL=http://${HTTP_SERVER}/deps/opencv342-deps/
-        -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_INSTALL_LIBDIR=lib
-        -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
-        -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
-    BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
-    DEPENDS libjpeg-turbo-202 libpng
-)
-
+# ExternalProject_Add(
+#     zlib
+#     PREFIX zlib
+#     URL https://sourceforge.net/projects/libpng/files/zlib/1.2.8/zlib-1.2.8.tar.gz/download?use_mirror=cytranet&download=
+#     # URL http://${HTTP_SERVER}/deps/zlib-1.2.8.tar.gz
+#     # URL_HASH SHA256=36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d
+#     CONFIGURE_COMMAND CFLAGS=-fPIC CXXFLAGS=-fPIC LDFLAGS=-fPIC ./configure --prefix=${THIRD_PARTY_PREFIX} 
+#     BUILD_COMMAND CFLAGS=-fPIC CXXFLAGS=-fPIC LDFLAGS=-fPIC make -j $ENV{J}
+#     INSTALL_COMMAND make install
+#     BUILD_IN_SOURCE 1
+# )
+# # libpng
+# ExternalProject_Add(
+#     libpng
+#     PREFIX libpng
+#     # URL http://${HTTP_SERVER}/deps/libpng-1.6.37.tar.gz
+#     URL https://sourceforge.net/projects/libpng/files/libpng16/1.6.37/libpng-1.6.37.tar.gz/download
+#     # URL_HASH SHA256=daeb2620d829575513e35fecc83f0d3791a620b9b93d800b763542ece9390fb4
+#     BUILD_IN_SOURCE 0
+#     INSTALL_DIR ${THIRD_PARTY_PREFIX}
+#     CMAKE_ARGS
+#         -DCMAKE_BUILD_TYPE=Release
+#         -DCMAKE_INSTALL_LIBDIR=lib
+#         -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
+#         -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
+#         -DPNG_TESTS:BOOL=OFF
+#         -DPNG_SHARED:BOOL=OFF
+#         -DPNG_STATIC:BOOL=ON
+#         -DPNG_DEBUG:BOOL=OFF
+#         -DCMAKE_CXX_FLAGS=-fPIC
+#         -DCMAKE_C_FLAGS=-fPIC
+#     BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
+#     INSTALL_COMMAND make install &&
+#         cd ${THIRD_PARTY_PREFIX}/include && ln -s libpng16 libpng
+#     DEPENDS zlib
+# )
+# 
+# # libjpeg-turbo-202
+# ExternalProject_Add(
+#     libjpeg-turbo-202
+#     PREFIX libjpeg-turbo-202
+#     URL https://sourceforge.net/projects/libjpeg-turbo/files/2.0.2/libjpeg-turbo-2.0.2.tar.gz/download
+#     # URL http://${HTTP_SERVER}/deps/libjpeg-turbo-2.0.2.tar.gz
+#     # URL_HASH SHA256=b45255bd476c19c7c6b198c07c0487e8b8536373b82f2b38346b32b4fa7bb942
+#     BUILD_IN_SOURCE 0
+#     CMAKE_ARGS
+#         -G "Unix Makefiles"
+#         -DCMAKE_CXX_FLAGS=-fPIC
+#         -DCMAKE_C_FLAGS=-fPIC
+#         -DENABLE_SHARED=1
+#         -DENABLE_STATIC=1
+#         -DCMAKE_BUILD_TYPE=Release
+#         -DCMAKE_INSTALL_LIBDIR=${THIRD_PARTY_PREFIX}/lib
+#         -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
+#         -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
+#     BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
+# )
+# 
+# # opencv-342
+# ExternalProject_Add(
+#     opencv-342
+#     PREFIX opencv-342
+#     # URL http://${HTTP_SERVER}/deps/opencv-3.4.2.tar.gz
+#     URL https://github.com/opencv/opencv/archive/refs/tags/3.4.2.tar.gz
+#     # URL_HASH SHA256=81dbd5e7e9f8a4c936b94629bf4765745942a1d634ae38ec08bc57b73b28ffc5
+#     BUILD_IN_SOURCE 0
+#     CMAKE_ARGS
+#         -DBUILD_SHARED_LIBS=OFF
+#         -DBUILD_PNG=OFF
+#         -DBUILD_JASPER=ON
+#         -DBUILD_JPEG=OFF
+#         -DBUILD_WEBP=ON
+#         -DBUILD_TIFF=ON
+#         -DBUILD_ZLIB=ON
+#         -DWITH_JPEG=ON
+#         -DWITH_WEBP=ON
+#         -DWITH_PNG=ON
+#         -DWITH_JASPER=ON
+#         -DWITH_TIFF=ON
+#         -DWITH_LIBV4L=ON
+#         -DWITH_V4L=OFF
+#         -DWITH_FFMPEG=OFF
+#         -DWITH_1394=OFF
+#         -DWITH_GTK=OFF
+#         -DWITH_VFW=OFF
+#         -DWITH_CUDA=OFF
+#         -DWITH_OPENEXR=OFF
+#         -DWITH_OPENMP=OFF
+#         -DWITH_TBB=OFF
+#         -DWITH_IPP=ON
+#         -DPNG_INCLUDE_DIR=${THIRD_PARTY_PREFIX}/include
+#         -DPNG_LIBRARY=${THIRD_PARTY_PREFIX}/lib/libpng.a
+#         -DJPEG_INCLUDE_DIR=${THIRD_PARTY_PREFIX}/include
+#         -DJPEG_LIBRARY=${THIRD_PARTY_PREFIX}/lib/libjpeg.a
+#         -DOPENCV_IPPICV_URL=http://${HTTP_SERVER}/deps/opencv342-deps/
+#         -DCMAKE_BUILD_TYPE=Release
+#         -DCMAKE_INSTALL_LIBDIR=lib
+#         -DCMAKE_PREFIX_PATH=${THIRD_PARTY_PREFIX}
+#         -DCMAKE_INSTALL_PREFIX=${THIRD_PARTY_PREFIX}
+#     BUILD_COMMAND ${CMAKE_COMMAND} --build . --parallel $ENV{J}
+#     DEPENDS libjpeg-turbo-202 libpng
+# )
+# 
 # rapidxml
 ExternalProject_Add(
     rapidxml
     PREFIX rapidxml
-    URL http://${HTTP_SERVER}/deps/rapidxml-1.13.zip
-    URL_HASH SHA256=c3f0b886374981bb20fabcf323d755db4be6dba42064599481da64a85f5b3571
+    # URL http://${HTTP_SERVER}/deps/rapidxml-1.13.zip
+    URL https://sourceforge.net/projects/rapidxml/files/rapidxml/rapidxml%201.13/rapidxml-1.13.zip/download
+    # URL_HASH SHA256=c3f0b886374981bb20fabcf323d755db4be6dba42064599481da64a85f5b3571
     CONFIGURE_COMMAND
         rm -rf ${THIRD_PARTY_PREFIX}/include/rapidxml &&
         mkdir -p ${THIRD_PARTY_PREFIX}/include/rapidxml &&
@@ -649,8 +656,9 @@ ExternalProject_Add(
 ExternalProject_Add(
     gflags
     PREFIX gflags
-    URL http://${HTTP_SERVER}/deps/gflags-v2.2.2.tar.gz
-    URL_HASH SHA256=34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf
+    # URL http://${HTTP_SERVER}/deps/gflags-v2.2.2.tar.gz
+    URL https://github.com/gflags/gflags/archive/refs/tags/v2.2.2.tar.gz
+    # URL_HASH SHA256=34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf
     BUILD_IN_SOURCE 0
     CMAKE_ARGS
       -DBUILD_SHARED_LIBS=0 -DBUILD_STATIC_LIBS=1
